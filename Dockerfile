@@ -31,8 +31,9 @@ RUN sed -i "s/;*listen.mode\s*=\s*0660/listen.mode = 0660/g" /etc/php5/fpm/pool.
 #mysql
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
-#sshd
+#utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get install openssh-server
+RUN apt-get install vim
 
 RUN mkdir -p /var/www
 
