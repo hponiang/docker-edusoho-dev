@@ -3,7 +3,7 @@
 #set -eo pipefail
 
 #check required env vars
-if [ -z "$DOMAIN" ] || [ -z "$IP" ] || [ -z "$MYSQL_USER" ] || [-z "$MYSQL_PASSWORD" ]; then
+if [ -z "$DOMAIN" ] || [ -z "$IP" ] || [ -z "$MYSQL_USER" ] || [ -z "$MYSQL_PASSWORD" ]; then
     echo >&2 'required option: -e DOMAIN="your_domain" -e IP="your_container_id" -e MYSQL_USER="your_mysql_user" -e MYSQL_PASSWORD="your_mysql_password"'
     exit 1
 fi
@@ -29,6 +29,9 @@ if [ !hasInitd ]; then
 fi
 
 #start services
+echo 'starting ssh server'
+/etc/init.d/ssh start >& /dev/null
+
 echo "starting mysql"
 /etc/init.d/mysql start
 mysql_root='mysql -uroot'

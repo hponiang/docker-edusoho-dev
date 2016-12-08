@@ -31,9 +31,9 @@ docker network inspect esdev
 
 Paramters
 
-> `--gateway 172.20.0.1`: specify your gateway ip, like `172.21.0.1`
-> `--subnet 172.20.0.0/16`: specify your subnet, like `172.21.0.1/16`
-> `esdev`: specify your network name
+* `--gateway 172.20.0.1`: specify your gateway ip, like `172.21.0.1`
+* `--subnet 172.20.0.0/16`: specify your subnet, like `172.21.0.1/16`
+* `esdev`: specify your network name
 
 > ***!!notes: the network is reusable, so this step should be only executed once***
 
@@ -44,8 +44,8 @@ mkdir -p /var/mysql/t5.edusoho.cn && \
 rm -rf /var/mysql/t5.edusoho.cn/* && \
 docker run --name t5.edusoho.cn -tid \
         -v /var/mysql/t5.edusoho.cn:/var/lib/mysql \
-        -v /var/www:/var/www
-        -p 49122:22
+        -v /var/www/t5.edusoho.cn:/var/www/t5.edusoho.cn \
+        -p 49122:22 \
         --network esdev \
         --ip 172.20.0.2 \
         -e DOMAIN="t5.edusoho.cn" \
@@ -57,15 +57,15 @@ docker run --name t5.edusoho.cn -tid \
 
 Paramters
 
-> `-v /var/mysql/t5.edusoho.cn:/var/lib/mysql`: map mysql data into a host dir
-> `-v /var/www:/var/www`: map the www dir into host
-> `-p 49122:22`: specify a host port for ssh login into the container
-> `/var/mysql/t5.edusoho.cn`: specify a dir in host machine to store mysql database data
-> `--name t5.edusoho.cn`: specify your container name, usually is your dev domain
-> `--network esdev`: specify your network name, created above
-> `--ip 172.20.0.2`: specify your container ip
-> `-e DOMAIN="t5.edusoho.cn"`: specify your dev domain
-> `-e IP="172.20.0.2""`: specify your container ip again
+* `-v /var/mysql/t5.edusoho.cn:/var/lib/mysql`: map mysql data into a host dir
+* `-v /var/www/t5.edusoho.cn:/var/www/t5.edusoho.cn`: map the www dir into host
+* `-p 49122:22`: specify a host port for ssh login into the container
+* `/var/mysql/t5.edusoho.cn`: specify a dir in host machine to store mysql database data
+* `--name t5.edusoho.cn`: specify your container name, usually is your dev domain
+* `--network esdev`: specify your network name, created above
+* `--ip 172.20.0.2`: specify your container ip
+* `-e DOMAIN="t5.edusoho.cn"`: specify your dev domain
+* `-e IP="172.20.0.2""`: specify your container ip again
 
 ##### Step.4 add a vhost to nginx in host
 

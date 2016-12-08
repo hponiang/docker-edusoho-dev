@@ -1,4 +1,4 @@
-FROM daocloud.io/library/ubuntu:12.04.5
+FROM ubuntu:12.04.5
 
 MAINTAINER Simon Wood <wuqian@howzhi.com>
 
