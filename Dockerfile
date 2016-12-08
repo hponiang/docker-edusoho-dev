@@ -9,7 +9,7 @@ ENV PHP_MAX_POST        1024M
 
 #init
 #COPY ubuntu/precise-sources.list /etc/apt/sources.list
-RUN apt-get update && apt-get install -y tzdata && cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo "${TIMEZONE}" > /etc/timezone
+RUN apt-get update && apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
 #nginx
 RUN apt-get install -y nginx
@@ -32,7 +32,7 @@ RUN sed -i "s/;*listen.mode\s*=\s*0660/listen.mode = 0660/g" /etc/php5/fpm/pool.
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
 #utils
-RUN DEBIAN_FRONTEND=noninteractive apt-get install openssh-server
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
 RUN apt-get install vim
 
 RUN mkdir -p /var/www
