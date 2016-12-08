@@ -33,7 +33,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
 #utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
-RUN apt-get install vim
+RUN apt-get install -y vim
 
 RUN mkdir -p /var/www
 
