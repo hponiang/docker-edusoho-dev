@@ -9,7 +9,7 @@ ENV PHP_MAX_POST        1024M
 
 #init
 COPY ubuntu/precise-sources.list /etc/apt/sources.list
-RUN apt-get update && apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
 #nginx
 RUN apt-get install -y nginx
@@ -38,7 +38,7 @@ RUN apt-get install -y vim
 
 #supervisor
 RUN apt-get install -y supervisor
-mkdir -p /var/run/sshd
+RUN mkdir -p /var/run/sshd
 COPY supervisor/edusoho.conf /etc/supervisor/conf.d
 COPY supervisor/util.conf /etc/supervisor/conf.d
 
