@@ -18,6 +18,10 @@ fi
 if [ !hasInitd ]; then
     touch /entrypoint-initd.lock
 
+    #start sshd
+    mkdir -p /var/run/sshd
+    /usr/sbin/sshd
+
     #mofidy domain for nginx vhost
     sed -i "s/{{DOMAIN}}/${DOMAIN}/g" /etc/nginx/sites-enabled/edusoho.conf
 

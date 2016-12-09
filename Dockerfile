@@ -35,8 +35,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
 #utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
-RUN mkdir -p /var/run/sshd
-RUN /usr/sbin/sshd
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git

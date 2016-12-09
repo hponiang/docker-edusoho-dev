@@ -46,6 +46,8 @@ docker run --name t5.edusoho.cn -tid \
         -v /var/mysql/t5.edusoho.cn:/var/lib/mysql \
         -v /var/www/t5.edusoho.cn:/var/www/edusoho \
         -p 49122:22 \
+        --cpuset-cpus 2 \
+        --memory 2048m \
         --network esdev \
         --ip 172.20.0.2 \
         -e DOMAIN="t5.edusoho.cn" \
@@ -82,13 +84,19 @@ server {
 }
 ```
 
-Step.5 how to login ssh
+##### Step.5 change root password
+
+```shell
+docker exec -ti t5.edusoho.cn passwd root
+```
+
+##### Step.6 how to login ssh from remote
 
 ```shell
 ssh root@t5.edusoho.cn -p49122
 ```
 
-Step.6 download edusoho source code and init
+##### Step.7 download edusoho source code and config it
 
 ```shell
 #download edusoho source code
@@ -109,13 +117,13 @@ app/console system:init
 chown -R www-data:www-data edusoho/
 ```
 
-##### Step.7 how to visit
+##### Step.8 how to visit
 
 ```
 visit http://t5.edusoho.cn
 ```
 
-#### How to manage automatically
+#### A shortcut to do Step.3 and Step.4 automatically
 
 ```shell
 wget https://raw.githubusercontent.com/starshiptroopers/docker-edusoho-dev/develop/docker-create-edusoho-dev.sh

@@ -18,6 +18,8 @@ docker run --name ${DOMAIN} -tid \
         -v /var/mysql/${DOMAIN}:/var/lib/mysql \
         -v /var/www/${DOMAIN}:/var/www/edusoho \
         -p ${SSH_PORT}:22 \
+        --cpuset-cpus 2 \
+        --memory 2048m \
         --network ${NETWORK} \
         --ip ${IP} \
         -e DOMAIN="${DOMAIN}" \
