@@ -24,7 +24,7 @@ docker pull edusoho/edusoho-dev
 
 ##### Step.2 create a network to specify permanent ip for the container
 
-```
+```shell
 docker network create --gateway 172.20.0.1 --subnet 172.20.0.0/16 esdev
 docker network inspect esdev
 ```
@@ -39,33 +39,31 @@ Paramters
 
 ##### Step.3 run it
 
-```
+```shell
 mkdir -p /var/mysql/t5.edusoho.cn && \
 rm -rf /var/mysql/t5.edusoho.cn/* && \
 docker run --name t5.edusoho.cn -tid \
         -v /var/mysql/t5.edusoho.cn:/var/lib/mysql \
-        -v /var/www/t5.edusoho.cn:/var/www/t5.edusoho.cn \
+        -v /var/www/t5.edusoho.cn:/var/www/edusoho \
         -p 49122:22 \
         --network esdev \
         --ip 172.20.0.2 \
         -e DOMAIN="t5.edusoho.cn" \
         -e IP="172.20.0.2" \
-        -e MYSQL_USER="esuser" \
-        -e MYSQL_PASSWORD="edusoho" \
         edusoho/edusoho-dev
 ```
 
 Paramters
 
 * `-v /var/mysql/t5.edusoho.cn:/var/lib/mysql`: map mysql data into a host dir
-* `-v /var/www/t5.edusoho.cn:/var/www/t5.edusoho.cn`: map the www dir into host
+* `-v /var/www/t5.edusoho.cn:/var/www/edusoho`: map the www dir into host
 * `-p 49122:22`: specify a host port for ssh login into the container
 * `/var/mysql/t5.edusoho.cn`: specify a dir in host machine to store mysql database data
 * `--name t5.edusoho.cn`: specify your container name, usually is your dev domain
 * `--network esdev`: specify your network name, created above
 * `--ip 172.20.0.2`: specify your container ip
 * `-e DOMAIN="t5.edusoho.cn"`: specify your dev domain
-* `-e IP="172.20.0.2""`: specify your container ip again
+* `-e IP="172.20.0.2"`: specify your container ip again
 
 ##### Step.4 add a vhost to nginx in host
 
@@ -84,16 +82,49 @@ server {
 }
 ```
 
-##### Step.5 how to visit
+Step.5 how to login ssh
+
+```shell
+ssh root@t5.edusoho.cn -p49122
+```
+
+Step.6 download edusoho source code and init
+
+```shell
+#download edusoho source code
+cd /var/www
+git clone https://github.com/edusoho/edusoho.git edusoho
+# or
+git clone http://gitlab.howzhi.net/edusoho/edusoho.git edusoho
+
+#download vendor
+git submodule init
+git submodule update
+
+#configuration
+echo 'CREATE DATABASE IF NOT EXISTS `edusoho-dev` DEFAULT CHARACTER SET utf8;' | mysql
+cp app/config/parameters.yml.dist app/config/parameters.yml
+./bin/phpmig migrate
+app/console system:init
+chown -R www-data:www-data edusoho/
+```
+
+##### Step.7 how to visit
 
 ```
 visit http://t5.edusoho.cn
 ```
 
-Step.6 how to manage
+#### How to manage automatically
 
+```shell
+wget https://raw.githubusercontent.com/starshiptroopers/docker-edusoho-dev/develop/docker-create-edusoho-dev.sh
+mv docker-create-edusoho-dev.sh /usr/bin/
+chmod +x /usr/bin/docker-create-edusoho-dev.sh
 ```
-ssh root@t5.edusoho.cn -p49122
+
+```shell
+docker-create-edusoho-dev.sh
 ```
 
 #### How to build from github source

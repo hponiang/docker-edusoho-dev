@@ -4,7 +4,7 @@
 
 #check required env vars
 if [ -z "$DOMAIN" ] || [ -z "$IP" ]; then
-    echo >&2 'required option: -e DOMAIN="your_domain" -e IP="your_container_id"'
+    echo >&2 'required option: -e DOMAIN="your_domain" -e IP="your_container_ip"'
     exit 1
 fi
 
@@ -20,7 +20,6 @@ if [ !hasInitd ]; then
 
     #mofidy domain for nginx vhost
     sed -i "s/{{DOMAIN}}/${DOMAIN}/g" /etc/nginx/sites-enabled/edusoho.conf
-    sed -i "s/{{IP}}/${IP}/g" /etc/nginx/sites-enabled/edusoho.conf
 
     #init datadir if mount dir outside to /var/lib/mysql
     sed -i "s/user\s*=\s*debian-sys-maint/user = root/g" /etc/mysql/debian.cnf

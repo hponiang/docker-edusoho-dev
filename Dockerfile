@@ -22,6 +22,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php5 php5-cli php5-curl ph
 RUN sed -i "s/;*post_max_size\s*=\s*\w*/post_max_size = ${PHP_MAX_POST}/g" /etc/php5/fpm/php.ini
 RUN sed -i "s/;*memory_limit\s*=\s*\w*/memory_limit = ${PHP_MEMORY_LIMIT}/g" /etc/php5/fpm/php.ini
 RUN sed -i "s/;*upload_max_filesize\s*=\s*\w*/upload_max_filesize = ${PHP_MAX_UPLOAD}/g" /etc/php5/fpm/php.ini
+RUN sed -i "s/;*display_errors\s*=\s*\w*/display_errors = On/g" /etc/php5/fpm/php.ini
 
 #fpm
 RUN sed -i "s/;*daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
@@ -32,17 +33,19 @@ RUN sed -i "s/;*listen.mode\s*=\s*0660/listen.mode = 0660/g" /etc/php5/fpm/pool.
 #mysql
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
-#ssh && vim
+#utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
+RUN mkdir -p /var/run/sshd
+RUN /usr/sbin/sshd
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git
 
 #supervisor
 RUN apt-get install -y supervisor
-RUN mkdir -p /var/run/sshd
 COPY supervisor/edusoho.conf /etc/supervisor/conf.d
-COPY supervisor/util.conf /etc/supervisor/conf.d
 
-RUN mkdir -p /var/www
+RUN mkdir -p /var/www/edusoho
 
 RUN apt-get -y autoremove
 RUN apt-get clean
