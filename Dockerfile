@@ -8,7 +8,7 @@ ENV PHP_MAX_UPLOAD      1024M
 ENV PHP_MAX_POST        1024M
 
 #init
-#COPY ubuntu/precise-sources.list /etc/apt/sources.list
+COPY ubuntu/precise-sources.list /etc/apt/sources.list
 RUN apt-get update && apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
 #nginx
@@ -24,6 +24,7 @@ RUN sed -i "s/;*memory_limit\s*=\s*\w*/memory_limit = ${PHP_MEMORY_LIMIT}/g" /et
 RUN sed -i "s/;*upload_max_filesize\s*=\s*\w*/upload_max_filesize = ${PHP_MAX_UPLOAD}/g" /etc/php5/fpm/php.ini
 
 #fpm
+RUN sed -i "s/;*daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
 RUN sed -i "s/;*listen.owner\s*=\s*www-data/listen.owner = www-data/g" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i "s/;*listen.group\s*=\s*www-data/listen.group = www-data/g" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i "s/;*listen.mode\s*=\s*0660/listen.mode = 0660/g" /etc/php5/fpm/pool.d/www.conf
@@ -31,9 +32,15 @@ RUN sed -i "s/;*listen.mode\s*=\s*0660/listen.mode = 0660/g" /etc/php5/fpm/pool.
 #mysql
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
-#utils
+#ssh && vim
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
 RUN apt-get install -y vim
+
+#supervisor
+RUN apt-get install -y supervisor
+mkdir -p /var/run/sshd
+COPY supervisor/edusoho.conf /etc/supervisor/conf.d
+COPY supervisor/util.conf /etc/supervisor/conf.d
 
 RUN mkdir -p /var/www
 
