@@ -12,13 +12,13 @@ COPY ubuntu/precise-sources.list /etc/apt/sources.list
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
 #nginx
-RUN apt-get install -y nginx
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nginx
 RUN lineNum=`sed -n -e '/sendfile/=' /etc/nginx/nginx.conf`; sed -i $((lineNum+1))'i client_max_body_size 1024M;' /etc/nginx/nginx.conf
 RUN sed -i '1i daemon off;' /etc/nginx/nginx.conf
 COPY nginx/edusoho.conf /etc/nginx/sites-enabled
 
 #php
-RUN apt-get install -y php5 php5-cli php5-curl php5-fpm php5-intl php5-mcrypt php5-mysqlnd php5-gd
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php5 php5-cli php5-curl php5-fpm php5-intl php5-mcrypt php5-mysqlnd php5-gd
 RUN sed -i "s/;*post_max_size\s*=\s*\w*/post_max_size = ${PHP_MAX_POST}/g" /etc/php5/fpm/php.ini
 RUN sed -i "s/;*memory_limit\s*=\s*\w*/memory_limit = ${PHP_MEMORY_LIMIT}/g" /etc/php5/fpm/php.ini
 RUN sed -i "s/;*upload_max_filesize\s*=\s*\w*/upload_max_filesize = ${PHP_MAX_UPLOAD}/g" /etc/php5/fpm/php.ini
@@ -34,7 +34,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
 #ssh && vim
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
-RUN apt-get install -y vim
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim
 
 #supervisor
 RUN apt-get install -y supervisor

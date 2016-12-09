@@ -34,7 +34,7 @@ if [ !hasInitd ]; then
     echo '*******************************'
 
     echo 'starting...'
-    supervisord
+    supervisord -n
 else
     bash
 fi
