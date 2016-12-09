@@ -106,6 +106,7 @@ git clone https://github.com/edusoho/edusoho.git edusoho
 git clone http://gitlab.howzhi.net/edusoho/edusoho.git edusoho
 
 #download vendor
+cd edusoho
 git submodule init
 git submodule update
 
@@ -114,7 +115,7 @@ echo 'CREATE DATABASE IF NOT EXISTS `edusoho-dev` DEFAULT CHARACTER SET utf8;' |
 cp app/config/parameters.yml.dist app/config/parameters.yml
 ./bin/phpmig migrate
 app/console system:init
-chown -R www-data:www-data edusoho/
+chown -R www-data:www-data /var/www/edusoho
 ```
 
 ##### Step.8 how to visit
