@@ -1,43 +1,72 @@
-# docker-edusoho-dev
-EduSoho Dockerfile Dev
+## 一键生成EduSoho本地开发环境和线上测试环境
 
-#### Introductions
+#### 说明
 
-This is for edusoho developer use.
-It's recommend to run one edusoho copy in each edusoho/edusoho-dev docker container.
+* 本镜像仅供edusoho开发人员使用.
+* 最佳实践是每个容器只跑一个edusoho程序.
+* debian/ubuntu上已经测试.
 
 
-#### Usage
+#### 使用方法
 
-##### First install docker-engine
+##### 前期准备：在物理机上安装docker
 ```
 Ubuntu: https://docs.docker.com/engine/installation/linux/ubuntulinux/
 Mac: https://docs.docker.com/engine/installation/mac/
 Windows: https://docs.docker.com/engine/installation/windows/
 ```
 
-##### Step.1 pull the image
+##### 前期准备：在物理机上安装nginx
+```
+Ubuntu: apt-get install nginx
+Mac: brew install nginx
+Windows: 请自行解决
+```
+
+>在物理机上安装nginx是为了多个docker容器能共享物理机80端口
+
+##### 初次使用请先编译镜像
 
 ```
-docker pull edusoho/edusoho-dev
+docker build -t edusoho/edusoho-dev .
 ```
 
-##### Step.2 create a network to specify permanent ip for the container
+```
+#也可以从docker官方仓库下载，由于官方的网络连接太慢，不推荐此方式
+#docker pull edusoho/edusoho-dev
+```
+
+##### ubuntu用户，至此可以借助脚本直接运行新容器了
+
+```shell
+mv docker-create-edusoho-dev.sh /usr/bin/
+chmod +x /usr/bin/docker-create-edusoho-dev.sh
+docker-create-edusoho-dev.sh
+```
+
+>以后每次需要新建一个开发测试站，只要运行docker-create-edusoho-dev.sh
+即可
+
+===============手动配置说明===============
+
+##### windows用户，需要手动启动新容器，当然也适用于ubuntu用户想折腾一下的
+
+##### 先创建一个网络，以便固定住容器的ip
 
 ```shell
 docker network create --gateway 172.20.0.1 --subnet 172.20.0.0/16 esdev
 docker network inspect esdev
 ```
 
-Paramters
+参数说明
 
-* `--gateway 172.20.0.1`: specify your gateway ip, like `172.21.0.1`
-* `--subnet 172.20.0.0/16`: specify your subnet, like `172.21.0.1/16`
-* `esdev`: specify your network name
+* `--gateway 172.20.0.1`: 为新网络指定一个网关地址
+* `--subnet 172.20.0.0/16`: 设置子网掩码
+* `esdev`: 新网络的名称
 
-> ***!!notes: the network is reusable, so this step should be only executed once***
+> ***!!注意: 网络一般常见一次就够了，多个容器都挂到这个网络下即可***
 
-##### Step.3 run it
+##### 运行新容器
 
 ```shell
 mkdir -p /var/mysql/t5.edusoho.cn && \
@@ -55,19 +84,18 @@ docker run --name t5.edusoho.cn -tid \
         edusoho/edusoho-dev
 ```
 
-Paramters
+参数说明
 
-* `-v /var/mysql/t5.edusoho.cn:/var/lib/mysql`: map mysql data into a host dir
-* `-v /var/www/t5.edusoho.cn:/var/www/edusoho`: map the www dir into host
-* `-p 49122:22`: specify a host port for ssh login into the container
-* `/var/mysql/t5.edusoho.cn`: specify a dir in host machine to store mysql database data
-* `--name t5.edusoho.cn`: specify your container name, usually is your dev domain
-* `--network esdev`: specify your network name, created above
-* `--ip 172.20.0.2`: specify your container ip
-* `-e DOMAIN="t5.edusoho.cn"`: specify your dev domain
-* `-e IP="172.20.0.2"`: specify your container ip again
+* `-v /var/mysql/t5.edusoho.cn:/var/lib/mysql`: 把一个本机目录映射到容器中的mysql数据目录，以便保证数据库数据不会丢失
+* `-v /var/www/t5.edusoho.cn:/var/www/edusoho`: 映射代码目录，以便在本机用sublime做开发，文件是软连接形式映射
+* `-p 49122:22`: 配置一个ssh远程登录端口，测试服务器上可以用，本地开发可以不用
+* `--name t5.edusoho.cn`: 指定域名为容器的名字，便于管理
+* `--network esdev`: 指定在前一步你创建好的网络名称
+* `--ip 172.20.0.2`: 为新容器分配一个固定IP，以便在本机做80端口转发
+* `-e DOMAIN="t5.edusoho.cn"`: 指定域名
+* `-e IP="172.20.0.2"`: 再次指定一下新容器的IP
 
-##### Step.4 add a vhost to nginx in host
+##### 在物理机的nginx里添加一个vhost
 
 ```
 server {
@@ -84,19 +112,21 @@ server {
 }
 ```
 
-##### Step.5 change root password
+##### 修改容器中root密码
 
 ```shell
 docker exec -ti t5.edusoho.cn passwd root
 ```
 
-##### Step.6 how to login ssh from remote
+##### 尝试远程登录管理
 
 ```shell
 ssh root@t5.edusoho.cn -p49122
 ```
 
-##### Step.7 download edusoho source code and config it
+===============以下是部署edusoho教程===============
+
+##### 下载edusoho源码和配置edusoho
 
 ```shell
 #download edusoho source code
@@ -118,24 +148,8 @@ app/console system:init
 chown -R www-data:www-data /var/www/edusoho
 ```
 
-##### Step.8 how to visit
+##### 访问一下
 
 ```
 visit http://t5.edusoho.cn
 ```
-
-#### A shortcut to do Step.3 and Step.4 automatically
-
-```shell
-wget https://raw.githubusercontent.com/starshiptroopers/docker-edusoho-dev/develop/docker-create-edusoho-dev.sh
-mv docker-create-edusoho-dev.sh /usr/bin/
-chmod +x /usr/bin/docker-create-edusoho-dev.sh
-```
-
-```shell
-docker-create-edusoho-dev.sh
-```
-
-#### How to build from github source
-
-Respo: https://github.com/starshiptroopers/docker-edusoho-dev
