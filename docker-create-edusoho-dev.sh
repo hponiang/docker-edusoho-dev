@@ -4,18 +4,18 @@
 #!/bin/bash
 
 #check nginx
-# NGINX_SITE_ENABLE_DIR='/etc/nginx/sites-enabled'
+NGINX_SITE_ENABLE_DIR='/etc/nginx/sites-enabled'
 
-# if [ ! -d "$NGINX_SITE_ENABLE_DIR" ]; then  
-#     echo >&2 "Error: $NGINX_SITE_ENABLE_DIR does not exsit, please check if the host has nginx installed or you can change the dir in this source code"
-#     exit 1
-# fi  
+if [ ! -d "$NGINX_SITE_ENABLE_DIR" ]; then  
+    echo >&2 "Error: $NGINX_SITE_ENABLE_DIR does not exsit, please check if the host has nginx installed or you can change the dir in this source code"
+    exit 1
+fi  
 
-# service nginx status
-# if [ $? -ne 0 ]; then
-#     echo >&2 'Error: service nginx status execute error, please check if the host has nginx installed' 
-#     exit 1
-# fi
+service nginx status
+if [ $? -ne 0 ]; then
+    echo >&2 'Error: service nginx status execute error, please check if the host has nginx installed' 
+    exit 1
+fi
 
 get_random_ssh_port(){
     local min=10000
