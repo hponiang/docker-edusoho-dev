@@ -1,4 +1,4 @@
-## 一键生成EduSoho本地开发环境和线上测试环境
+## 一键生成EduSoho本地开发及线上测试环境
 
 #### 说明
 
@@ -8,6 +8,30 @@
 
 
 #### 使用方法
+
+##### 先看几行Dockerfile中的注释
+
+```
+#大概位于前两行
+# 本地编译先注释掉第一行，不然下载很慢
+FROM ubuntu:12.04.5
+
+# 想要用php53开启这行
+# FROM daocloud.io/library/ubuntu:12.04.5
+
+# 想要用php56开启这行
+# FROM daocloud.io/library/ubuntu:14.04.5
+```
+
+```
+#大概位于十来行
+
+# 想要用php53再开启这行
+#COPY ubuntu/12.04-sources.list /etc/apt/sources.list
+
+# 想要用php56再开启这行
+#COPY ubuntu/14.04-sources.list /etc/apt/sources.list
+```
 
 ##### 前期准备：在物理机上安装docker
 ```
@@ -33,6 +57,7 @@ docker build -t edusoho/edusoho-dev .
 
 ```
 #也可以从docker官方仓库下载，由于官方的网络连接太慢，不推荐此方式
+#官方hub只有php53
 #docker pull edusoho/edusoho-dev
 ```
 
@@ -111,6 +136,9 @@ server {
      }
 }
 ```
+
+>坑：Windows和Mac下，无法用物理机ping通172.20.0.2，解决办法：
+>在docker run的时候添加一个 -p 18080:80，然后nginx的proxy_pass改成http://127.0.0.1:18080/
 
 ##### 修改容器中root密码
 

@@ -32,6 +32,7 @@ RUN sed -i "s/;*daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
 RUN sed -i "s/;*listen.owner\s*=\s*www-data/listen.owner = www-data/g" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i "s/;*listen.group\s*=\s*www-data/listen.group = www-data/g" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i "s/;*listen.mode\s*=\s*0660/listen.mode = 0660/g" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i "s/;*listen\s*=\s*\w*/listen = 127.0.0.1:9000" /etc/php5/fpm/pool.d/www.conf
 
 #mysql
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
