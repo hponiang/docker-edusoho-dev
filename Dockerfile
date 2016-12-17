@@ -10,7 +10,7 @@ ENV PHP_MAX_UPLOAD      1024M
 ENV PHP_MAX_POST        1024M
 
 #init
-#COPY ubuntu/12.04-sources.list /etc/apt/sources.list
+COPY ubuntu/12.04-sources.list /etc/apt/sources.list
 #COPY ubuntu/14.04-sources.list /etc/apt/sources.list
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
@@ -32,16 +32,19 @@ RUN sed -i "s/;*daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
 RUN sed -i "s/;*listen.owner\s*=\s*www-data/listen.owner = www-data/g" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i "s/;*listen.group\s*=\s*www-data/listen.group = www-data/g" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i "s/;*listen.mode\s*=\s*0660/listen.mode = 0660/g" /etc/php5/fpm/pool.d/www.conf
-RUN sed -i "s/;*listen\s*=\s*\w*/listen = 127.0.0.1:9000" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i "s/;*listen\s*=\s*\w*/listen = 127.0.0.1:9000/g" /etc/php5/fpm/pool.d/www.conf
 
 #mysql
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 
 #utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
-
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y sudo
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y curl
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y iptables
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y lsof
 
 #supervisor
 RUN apt-get install -y supervisor
