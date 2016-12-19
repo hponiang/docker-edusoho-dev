@@ -18,6 +18,10 @@ fi
 if [ !hasInitd ]; then
     touch /entrypoint-initd.lock
 
+    #utils
+    source ~/.git-completion.bash
+    alias cnpm="npm --registry=https://registry.npm.taobao.org --cache=$HOME/.npm/.cache/cnpm --disturl=https://npm.taobao.org/mirrors/node --userconfig=$HOME/.cnpmrc"
+
     #start sshd
     mkdir -p /var/run/sshd
     /usr/sbin/sshd

@@ -59,7 +59,6 @@ RUN rm -rf node-v6.9.2-linux-x64.tar
 RUN mv node-v6.9.2-linux-x64 /usr/local/node
 RUN ln -s /usr/local/node/bin/node /usr/bin/
 RUN ln -s /usr/local/node/bin/npm /usr/bin/
-RUN alias cnpm="npm --registry=https://registry.npm.taobao.org --cache=$HOME/.npm/.cache/cnpm --disturl=https://npm.taobao.org/mirrors/node --userconfig=$HOME/.cnpmrc"
 
 #supervisor
 RUN apt-get install -y supervisor
