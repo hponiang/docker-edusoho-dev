@@ -183,6 +183,10 @@ cp app/config/parameters.yml.dist app/config/parameters.yml
 ./bin/phpmig migrate
 app/console system:init
 chown -R www-data:www-data /var/www/edusoho
+
+#npm develop
+cnpm install
+npm run dev
 ```
 
 ##### 访问一下
