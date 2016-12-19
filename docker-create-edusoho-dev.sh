@@ -90,10 +90,14 @@ while [ -n "$is_ip_exist" ]; do
 done
 
 #docker run
-mkdir -p /var/mysql/${DOMAIN} && \
-rm -rf /var/mysql/${DOMAIN}/* && \
+mysql_dir=/var/mysql/${DOMAIN}
+if [ -d "$mysql_dir" ]; then
+    cp -R ${mysql_dir} ${mysql_dir}_backup`date +%Y%m%d%H%I%M`
+fi
+mkdir -p ${mysql_dir} && \
+rm -rf ${mysql_dir}/* && \
 docker run --name ${DOMAIN} -tid \
-        -v /var/mysql/${DOMAIN}:/var/lib/mysql \
+        -v ${mysql_dir}:/var/lib/mysql \
         -v /var/www/${DOMAIN}:/var/www/edusoho \
         -p ${ssh_port}:22 \
         --network ${NETWORK} \
