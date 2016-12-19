@@ -116,7 +116,7 @@ server {
           proxy_set_header Host $host;
           proxy_set_header X-Real-Ip $remote_addr;
           proxy_set_header X-Forwarded-For $remote_addr;
-          proxy_pass http://${IP}:80/;
+          proxy_pass http://${ip}:80/;
      }
 }
 EOF

@@ -152,6 +152,14 @@ docker exec -ti t5.edusoho.cn passwd root
 ssh root@t5.edusoho.cn -p49122
 ```
 
+##### 容器内管理php/mysql/fpm
+
+```shell
+supervisorctl restart nginx
+supervisorctl restart mysql
+supervisorctl restart php5-fpm
+```
+
 ===============以下是部署edusoho教程===============
 
 ##### 下载edusoho源码和配置edusoho
