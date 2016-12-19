@@ -47,15 +47,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y curl
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y iptables
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y lsof
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y xz-utils
 RUN curl -o ~/.git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
 RUN sed -i '$a source ~/.git-completion.bash' /etc/profile
 
 #nodejs
-RUN curl -o ~/node-v6.9.2-linux-x64.tar.xz https://mirrors.ustc.edu.cn/node/v6.9.2/node-v6.9.2-linux-x64.tar.xz
-RUN xz -d ~/node-v6.9.2-linux-x64.tar.xz
-RUN tar xvf ~/node-v6.9.2-linux-x64.tar
-RUN rm -rf ~/node-v6.9.2-linux-x64.tar
-RUN mv ~/node-v6.9.2-linux-x64 /usr/local/node
+RUN curl -O https://mirrors.ustc.edu.cn/node/v6.9.2/node-v6.9.2-linux-x64.tar.xz
+RUN xz -d node-v6.9.2-linux-x64.tar.xz
+RUN tar xvf node-v6.9.2-linux-x64.tar
+RUN rm -rf node-v6.9.2-linux-x64.tar
+RUN mv node-v6.9.2-linux-x64 /usr/local/node
 RUN ln -s /usr/local/node/bin/node /usr/bin/
 RUN ln -s /usr/local/node/bin/npm /usr/bin/
 RUN alias cnpm="npm --registry=https://registry.npm.taobao.org --cache=$HOME/.npm/.cache/cnpm --disturl=https://npm.taobao.org/mirrors/node --userconfig=$HOME/.cnpmrc"
