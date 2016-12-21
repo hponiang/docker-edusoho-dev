@@ -94,11 +94,15 @@ mysql_dir=/var/mysql/${DOMAIN}
 if [ -d "$mysql_dir" ]; then
     cp -R ${mysql_dir} ${mysql_dir}_backup`date +%Y%m%d%H%I%M`
 fi
+edusoho_dir=/var/www/${DOMAIN}
+if [ !-d "$edusoho_dir" ]; then
+    mkdir ${edusoho_dir}
+fi
 mkdir -p ${mysql_dir} && \
 rm -rf ${mysql_dir}/* && \
 docker run --name ${DOMAIN} -tid \
         -v ${mysql_dir}:/var/lib/mysql \
-        -v /var/www/${DOMAIN}:/var/www/edusoho \
+        -v ${edusoho_dir}:/var/www/edusoho \
         -p ${ssh_port}:22 \
         --network ${NETWORK} \
         --ip ${ip} \
