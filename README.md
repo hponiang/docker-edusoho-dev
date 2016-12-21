@@ -19,7 +19,7 @@ FROM ubuntu:12.04.5
 # 想要用php53开启这行
 # FROM daocloud.io/library/ubuntu:12.04.5
 
-# 想要用php56开启这行
+# 想要用php55开启这行
 # FROM daocloud.io/library/ubuntu:14.04.5
 ```
 
@@ -36,7 +36,7 @@ FROM ubuntu:12.04.5
 ##### 前期准备：在物理机上安装docker
 ```
 Ubuntu: https://docs.docker.com/engine/installation/linux/ubuntulinux/
-Mac: https://docs.docker.com/engine/installation/mac/
+Mac: https://docs.docker.com/engine/installation/mac/ (请下载docker.dmg包，不要下载toolbox版本)
 Windows: https://docs.docker.com/engine/installation/windows/
 ```
 
@@ -44,7 +44,6 @@ Windows: https://docs.docker.com/engine/installation/windows/
 ```
 Ubuntu: apt-get install nginx
 Mac: brew install nginx
-Windows: 请自行解决
 ```
 
 >在物理机上安装nginx是为了多个docker容器能共享物理机80端口
@@ -55,26 +54,65 @@ Windows: 请自行解决
 docker build -t edusoho/edusoho-dev .
 ```
 
-```
-#也可以从docker官方仓库下载，由于官方的网络连接太慢，不推荐此方式
-#官方hub只有php53
-#docker pull edusoho/edusoho-dev
-```
-
 ##### ubuntu用户，至此可以借助脚本直接运行新容器了
 
 ```shell
 mv docker-create-edusoho-dev.sh /usr/bin/
 chmod +x /usr/bin/docker-create-edusoho-dev.sh
 docker-create-edusoho-dev.sh
-```
 
+输入域名
+输入php版本，默认5.3
+```
 >以后每次需要新建一个开发测试站，只要运行docker-create-edusoho-dev.sh
 即可
+>创建完毕后，系统会给出两个提示：提示修改root密码和远程ssh的端口号
+
+##### 修改容器中root密码
+
+```shell
+docker exec -ti 域名 passwd root
+```
+
+##### 尝试远程登录管理
+
+```shell
+ssh root@域名 -p ssh端口号
+```
+
+##### 容器内管理php/mysql/fpm
+
+```shell
+supervisorctl restart nginx
+supervisorctl restart mysql
+supervisorctl restart php5-fpm
+#mysql root密码默认为空
+mysql
+```
+
+##### 为docker容器添加公钥登录和gitlab免密码pull
+
+有两种方式：
+* 1.每个docker容器有各自的公钥，然后在authorized_keys和gitlab上挨个添加，比较麻烦，但是安全性好
+* 2.所有docker容器公用一个公钥，只需添加一次信息即可，方便，但是开发人员能任意登录测试机上所有docker容器(前提也需要知道ssh端口号)
+
+我们的测试机上采用的是第2种方式
+
+```shell
+#到物理机上生成公钥并
+#执行以下命令时，可以把生成的公钥位置放到/home/docker/.ssh
+#注意我们的测试机上这步已经执行过了，不要重复执行
+#ssh-keygen -t rsa -C 'docker-general-key@物理机IP'
+
+#复制到docker容器里面
+docker cp /home/docker/.ssh 域名:/root/
+```
+>把这里生成的公钥添加到gitlab仓库的deploy key中
+>把自己电脑的公钥添加到docker容器的authorized_keys中
 
 ===============手动配置说明===============
 
-##### windows用户，需要手动启动新容器，当然也适用于ubuntu用户想折腾一下的
+##### windows用户，需要手动启动新容器，当然也适用于想折腾一下的ubuntu用户
 
 ##### 先创建一个网络，以便固定住容器的ip
 
@@ -94,6 +132,7 @@ docker network inspect esdev
 ##### 运行新容器
 
 ```shell
+mkdir -p /var/www/t5.edusoho.cn && \
 mkdir -p /var/mysql/t5.edusoho.cn && \
 rm -rf /var/mysql/t5.edusoho.cn/* && \
 docker run --name t5.edusoho.cn -tid \
@@ -143,26 +182,6 @@ server {
 >坑：Windows和Mac下，无法用物理机ping通172.20.0.2，解决办法：
 >在docker run的时候添加一个 -p 18080:80，然后nginx的proxy_pass改成http://127.0.0.1:18080/
 
-##### 修改容器中root密码
-
-```shell
-docker exec -ti t5.edusoho.cn passwd root
-```
-
-##### 尝试远程登录管理
-
-```shell
-ssh root@t5.edusoho.cn -p49122
-```
-
-```shell
-#容器内管理php/mysql/fpm
-supervisorctl restart nginx
-supervisorctl restart mysql
-supervisorctl restart php5-fpm
-#mysql root密码默认为空
-mysql
-```
 
 ===============以下是部署edusoho教程===============
 
@@ -174,11 +193,6 @@ cd /var/www
 git clone https://github.com/edusoho/edusoho.git edusoho
 # or
 git clone http://gitlab.howzhi.net/edusoho/edusoho.git edusoho
-
-#download vendor
-cd edusoho
-git submodule init
-git submodule update
 
 #configuration
 echo 'CREATE DATABASE IF NOT EXISTS `edusoho-dev` DEFAULT CHARACTER SET utf8;' | mysql

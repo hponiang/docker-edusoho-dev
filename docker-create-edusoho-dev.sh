@@ -140,5 +140,5 @@ echo " ssh root@${DOMAIN} -p ${ssh_port}"
 echo '******************************************************'
 
 echo 'nginx reloading'
-echo '*notice:if reloading failed, please execute "service nginx reload" yourself*'
+echo '*tip: if reloading failed, please execute "service nginx reload" yourself'
 service nginx reload
