@@ -1,7 +1,7 @@
 ###############
-# This bash is to run a new edusoho-dev docker container and inject a nginx `proxy_pass` configuration in host's nginx if exists
+# This bash is to run a docker server for each develop team
 # prepared yourself:
-# 1. docker network create --gateway 172.30.0.1 --subnet 172.30.0.0/16 esdev
+# 1. docker network create --gateway 172.30.0.1 --subnet 172.30.0.0/16 dockerservers
 ###############
 #!/bin/bash
 
@@ -11,7 +11,7 @@ NGINX_SITE_ENABLE_DIR='/etc/nginx/sites-enabled'
 if [ ! -d "$NGINX_SITE_ENABLE_DIR" ]; then  
     echo >&2 "Error: $NGINX_SITE_ENABLE_DIR does not exsit, please check if the host has nginx installed or you can change the dir in this source code"
     exit 1
-fi  
+fi
 
 service nginx status
 if [ $? -ne 0 ]; then
@@ -40,6 +40,8 @@ if [ -z "$DOMAIN" ]; then
     exit 1
 fi
 
+DOMAIN_WILD=${DOMAIN/\*/wild}
+
 read -p "input edusoho-dev version (default: latest):" VERSION
 
 if [ -z "$VERSION" ]; then
@@ -47,7 +49,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 #hardcode a network name
-NETWORK='esdev'
+NETWORK='dockerservers'
 
 get_random_ip_int(){
     local ip_int=`expr $RANDOM % 254`
@@ -92,23 +94,23 @@ while [ -n "$is_ip_exist" ]; do
 done
 
 #docker run
-mysql_dir=/var/mysql/${DOMAIN}
+mysql_dir=/var/dockerservers/${DOMAIN_WILD}/mysql
 if [ -d "$mysql_dir" ]; then
     cp -R ${mysql_dir} ${mysql_dir}_backup`date +%Y%m%d%H%I%M`
 fi
-edusoho_dir=/var/www/${DOMAIN}
-if [ ! -d "$edusoho_dir" ]; then
-    mkdir -p ${edusoho_dir}
+www_dir=/var/dockerservers/${DOMAIN_WILD}/www
+if [ ! -d "$www_dir" ]; then
+    mkdir -p ${www_dir}
 fi
 mkdir -p ${mysql_dir} && \
 rm -rf ${mysql_dir}/* && \
-docker run --name ${DOMAIN} -tid \
+docker run --name ${DOMAIN_WILD} -tid \
         -v ${mysql_dir}:/var/lib/mysql \
-        -v ${edusoho_dir}:/var/www/edusoho \
+        -v ${www_dir}:/var/www \
         -p ${ssh_port}:22 \
         --network ${NETWORK} \
         --ip ${ip} \
-        -e DOMAIN="${DOMAIN}" \
+        -e DOMAIN="${DOMAIN_WILD}" \
         -e IP="${ip}" \
         edusoho/edusoho-dev:${VERSION}
 
@@ -116,7 +118,7 @@ docker run --name ${DOMAIN} -tid \
 host='$host'
 remote_addr='$remote_addr'
 
-cat > ${NGINX_SITE_ENABLE_DIR}/${DOMAIN} <<-EOF 
+cat > ${NGINX_SITE_ENABLE_DIR}/${DOMAIN_WILD} <<-EOF 
 server {
      listen 80;
      server_name ${DOMAIN};
@@ -136,9 +138,9 @@ EOF
 
 echo '******************************************************'
 echo '1. change your root password:'
-echo " docker exec -ti ${DOMAIN} passwd root"
+echo " docker exec -ti ${DOMAIN_WILD} passwd root"
 echo '2. ssh login to your docker:'
-echo " ssh root@${DOMAIN} -p ${ssh_port}"
+echo " ssh root@${DOMAIN_WILD} -p ${ssh_port}"
 echo '******************************************************'
 
 echo 'nginx reloading'
