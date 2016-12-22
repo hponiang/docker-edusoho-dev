@@ -95,7 +95,7 @@ if [ -d "$mysql_dir" ]; then
     cp -R ${mysql_dir} ${mysql_dir}_backup`date +%Y%m%d%H%I%M`
 fi
 edusoho_dir=/var/www/${DOMAIN}
-if [ !-d "$edusoho_dir" ]; then
+if [ ! -d "$edusoho_dir" ]; then
     mkdir ${edusoho_dir}
 fi
 mkdir -p ${mysql_dir} && \
