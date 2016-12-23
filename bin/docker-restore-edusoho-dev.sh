@@ -37,11 +37,13 @@ if [ -n "$is_container_running" ]; then
     docker stop ${DOMAIN}
 fi
 
+echo 'restore in progress...'
 rm -rf ${mysql_dir}
 rm -rf ${www_dir}
 
 cp -R ${mysql_dir}_autobackup_latest ${mysql_dir}
 cp -R ${www_dir}_autobackup_latest ${www_dir}
+echo 'restore finished'
 
 echo "starting ${DOMAIN}"
 docker start ${DOMAIN}

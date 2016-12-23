@@ -36,11 +36,13 @@ if [ -n "$is_container_running" ]; then
     docker stop ${DOMAIN}
 fi
 
+echo 'backup in progress...'
 cp -R ${mysql_dir} ${mysql_dir}_autobackup_latest
 cp -R ${www_dir} ${www_dir}_autobackup_latest
 
 cp -R ${mysql_dir} ${mysql_dir}_autobackup_`date +%Y%m%d%H%I%M`
 cp -R ${www_dir} ${www_dir}_autobackup_`date +%Y%m%d%H%I%M`
+echo 'backup finished'
 
 echo "starting ${DOMAIN}"
 docker start ${DOMAIN}
