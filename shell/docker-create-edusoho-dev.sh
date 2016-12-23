@@ -1,7 +1,7 @@
 ###############
-# This bash is to run a docker server for each develop team
+# This bash is to run a new edusoho-dev docker container and inject a nginx `proxy_pass` configuration in host's nginx if exists
 # prepared yourself:
-# 1. docker network create --gateway 172.30.0.1 --subnet 172.30.0.0/16 dockerservers
+# 1. docker network create --gateway 172.30.0.1 --subnet 172.30.0.0/16 esdev
 ###############
 #!/bin/bash
 
@@ -11,7 +11,7 @@ NGINX_SITE_ENABLE_DIR='/etc/nginx/sites-enabled'
 if [ ! -d "$NGINX_SITE_ENABLE_DIR" ]; then  
     echo >&2 "Error: $NGINX_SITE_ENABLE_DIR does not exsit, please check if the host has nginx installed or you can change the dir in this source code"
     exit 1
-fi
+fi  
 
 service nginx status
 if [ $? -ne 0 ]; then
@@ -40,8 +40,6 @@ if [ -z "$DOMAIN" ]; then
     exit 1
 fi
 
-DOMAIN_WILD=${DOMAIN/\*/wild}
-
 read -p "input edusoho-dev version (default: latest):" VERSION
 
 if [ -z "$VERSION" ]; then
@@ -49,7 +47,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 #hardcode a network name
-NETWORK='dockerservers'
+NETWORK='esdev'
 
 get_random_ip_int(){
     local ip_int=`expr $RANDOM % 254`
@@ -94,23 +92,23 @@ while [ -n "$is_ip_exist" ]; do
 done
 
 #docker run
-mysql_dir=/var/dockerservers/${DOMAIN_WILD}/mysql
+mysql_dir=/var/mysql/${DOMAIN}
 if [ -d "$mysql_dir" ]; then
     cp -R ${mysql_dir} ${mysql_dir}_backup`date +%Y%m%d%H%I%M`
 fi
-www_dir=/var/dockerservers/${DOMAIN_WILD}/www
+www_dir=/var/www/${DOMAIN}
 if [ ! -d "$www_dir" ]; then
     mkdir -p ${www_dir}
 fi
 mkdir -p ${mysql_dir} && \
 rm -rf ${mysql_dir}/* && \
-docker run --name ${DOMAIN_WILD} -tid \
+docker run --name ${DOMAIN} -tid \
         -v ${mysql_dir}:/var/lib/mysql \
-        -v ${www_dir}:/var/www \
+        -v ${www_dir}:/var/www/edusoho \
         -p ${ssh_port}:22 \
         --network ${NETWORK} \
         --ip ${ip} \
-        -e DOMAIN="${DOMAIN_WILD}" \
+        -e DOMAIN="${DOMAIN}" \
         -e IP="${ip}" \
         edusoho/edusoho-dev:${VERSION}
 
@@ -118,7 +116,7 @@ docker run --name ${DOMAIN_WILD} -tid \
 host='$host'
 remote_addr='$remote_addr'
 
-cat > ${NGINX_SITE_ENABLE_DIR}/${DOMAIN_WILD} <<-EOF 
+cat > ${NGINX_SITE_ENABLE_DIR}/${DOMAIN} <<-EOF 
 server {
      listen 80;
      server_name ${DOMAIN};
@@ -136,11 +134,14 @@ server {
 }
 EOF
 
-echo '******************************************************'
+echo '******************* login info ***********************'
 echo '1. change your root password:'
-echo " docker exec -ti ${DOMAIN_WILD} passwd root"
+echo " docker exec -ti ${DOMAIN} passwd root"
 echo '2. ssh login to your docker:'
-echo " ssh root@${DOMAIN_WILD} -p ${ssh_port}"
+echo " ssh root@${DOMAIN} -p ${ssh_port}"
+echo '****************** storage info***********************'
+echo "1. mysql_data: ${mysql_dir}"
+echo "2. www_data: ${www_dir}"
 echo '******************************************************'
 
 echo 'nginx reloading'
