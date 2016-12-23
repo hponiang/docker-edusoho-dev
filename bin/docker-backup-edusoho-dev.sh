@@ -17,7 +17,7 @@ fi
 
 mysql_dir=/var/mysql/${DOMAIN}
 www_dir=/var/www/${DOMAIN}
-if [ ! -d "$mysql_dir" || ! -d "$www_dir" ]; then
+if [[ ! -d "$mysql_dir" || ! -d "$www_dir" ]]; then
     echo >&2 "Error: ${mysql_dir} or ${www_dir} does not exist. Please check if the docker container was runned by docker-create-edusoho-dev.sh"
     exit 1
 fi

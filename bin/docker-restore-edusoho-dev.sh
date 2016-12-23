@@ -17,7 +17,7 @@ fi
 
 mysql_dir=/var/mysql/${DOMAIN}
 www_dir=/var/www/${DOMAIN}
-if [ ! -d "$mysql_dir" || ! -d "$www_dir" ]; then
+if [[ ! -d "$mysql_dir" || ! -d "$www_dir" ]]; then
     echo >&2 "Error: ${mysql_dir} or ${www_dir} does not exist. Please check if the docker container was runned by docker-create-edusoho-dev.sh"
     exit 1
 fi
@@ -25,7 +25,7 @@ fi
 mysql_backup=${mysql_dir}_autobackup_latest
 www_backup=${www_dir}_autobackup_latest
 
-if [ ! -d "${mysql_backup}" || ! -d "${www_backup}" ]; then
+if [[ ! -d "${mysql_backup}" || ! -d "${www_backup}" ]]; then
     echo >&2 "Error: backup location in ${mysql_backup} or ${www_backup} does not exist. Please use docker-backup-edusoho-dev.sh to backup first."
     exit 1
 fi
