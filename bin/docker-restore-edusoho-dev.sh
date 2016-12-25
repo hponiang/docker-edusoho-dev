@@ -43,6 +43,9 @@ rm -rf ${www_dir}
 
 cp -R ${mysql_dir}_autobackup_latest ${mysql_dir}
 cp -R ${www_dir}_autobackup_latest ${www_dir}
+
+chown -R www-data:www-data ${www_dir}
+chmod -R 777 ${mysql_dir}
 echo 'restore finished'
 
 echo "starting ${DOMAIN}"
