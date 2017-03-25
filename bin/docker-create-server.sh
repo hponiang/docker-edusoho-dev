@@ -136,6 +136,9 @@ server {
 }
 EOF
 
+#add /etc/hosts map
+echo "${ip} ${DOMAIN_WILD}_local" >> /etc/hosts
+
 echo '******************* login info **********************'
 echo '1. change your root password:'
 echo " docker exec -ti ${DOMAIN_WILD} passwd root"
