@@ -2,7 +2,7 @@
 
 # 在docker容器正常运行时，禁止去里面操作
 # 
-# 一定要进入patch后再执行
+# 一定要进入patch目录后再执行该脚本，否则报attach/fix-dead.sh找不到
 
 for i in `docker ps -a |awk '$0 ~ /edusoho-dev/ {print $1}'`
 
