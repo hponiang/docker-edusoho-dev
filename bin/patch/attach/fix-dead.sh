@@ -11,13 +11,28 @@ bad_commands=(
   '/usr/sbin/sshd'
 )
 
-for command in ${bad_commands[@]};  
+# remove bad commands
+for command in ${bad_commands[@]};
 do  
   if [ -f "$command" ]; then
+    echo "mv ${command}..."
     mv $command ${command%/*}/_${command##*/}
   fi
 done
 
+# disable ssh service
+echo "disable ssh service..."
 pkill sshd
 touch /usr/sbin/sshd
 chmod +x /usr/sbin/sshd
+
+# enable mysql remote access
+echo "enable mysql remote access..."
+sed -i "s/bind-address/#bind-address/g" /etc/mysql/my.cnf
+supervisorctl restart mysql
+
+echo "CREATE USER 'es'@'%' IDENTIFIED BY 'kaifazhe';" | _mysql
+echo "GRANT ALL PRIVILEGES ON *.* TO 'es'@'%' IDENTIFIED BY 'kaifazhe' WITH GRANT OPTION;" | _mysql
+echo "FLUSH PRIVILEGES;" | _mysql
+
+echo "all done!"

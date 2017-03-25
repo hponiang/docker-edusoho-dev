@@ -82,7 +82,7 @@ if [ -z "$is_network_exist" ]; then
         docker network create --gateway ${gateway} --subnet ${subnet}/16 esdev
     done
 else
-    gateway=`docker network inspect ${NETWORK} |grep -e Gateway |awk  -F '\"' '{print $4}'`
+    gateway=`docker network inspect ${NETWORK} |grep -e Gateway |awk -F '\"' '{print $4}'`
 fi
 
 is_ip_exist=1

@@ -5,8 +5,11 @@
 for i in `docker ps -a |awk '$0 ~ /edusoho-dev/ {print $1}'`
 
   do
+  echo $i
+  echo 'handling cp shell'
   docker cp attach/fix-dead.sh $i:/
   docker exec $i chmod +x /fix-dead.sh
+  echo 'handling fix'
   docker exec $i /fix-dead.sh
 
 done

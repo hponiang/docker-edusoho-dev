@@ -6,6 +6,10 @@
 * 最佳实践是每个容器只跑一个edusoho程序.
 * debian/ubuntu上已经测试.
 
+#### 重要说明
+
+容器正常运行后最好不要进入容器内部去操作，比如查询mysql数据、npm编译等.
+所以开启docker的ssh服务仅供参考，实践中不要用ssh登录进docker，操作都在物理机上做.
 
 #### 使用方法
 
@@ -88,6 +92,15 @@ supervisorctl restart mysql
 supervisorctl restart php5-fpm
 #mysql root密码默认为空
 mysql
+```
+
+##### 从物理机连接到docker的mysql
+
+```shell
+mysql -h t5.edusoho.cn.local -ues -pkaifazhe
+#其中 t5.edusoho.cn.local 表示进t5的docker，在域名后面加上 _local 即可
+#账号默认是 es，密码 kaifazhe
+#注意：这是用docker-create-edusoho-dev.sh脚本生成的
 ```
 
 ##### 为docker容器添加公钥登录和gitlab免密码pull
@@ -192,7 +205,7 @@ server {
 cd /var/www
 git clone https://github.com/edusoho/edusoho.git edusoho
 # or
-git clone http://gitlab.howzhi.net/edusoho/edusoho.git edusoho
+git clone http://coding.codeages.net//edusoho/edusoho.git edusoho
 
 #configuration
 echo 'CREATE DATABASE IF NOT EXISTS `edusoho-dev` DEFAULT CHARACTER SET utf8;' | mysql
