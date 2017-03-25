@@ -135,7 +135,7 @@ server {
 EOF
 
 #add /etc/hosts map
-echo "${ip} ${DOMAIN}_local" >> /etc/hosts
+echo "${ip} ${DOMAIN}.local" >> /etc/hosts
  
 echo '******************* login info ***********************'
 echo '1. change your root password:'
