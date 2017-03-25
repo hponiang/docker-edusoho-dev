@@ -29,10 +29,9 @@ chmod +x /usr/sbin/sshd
 # enable mysql remote access
 echo "enable mysql remote access..."
 sed -i "s/bind-address/#bind-address/g" /etc/mysql/my.cnf
-supervisorctl restart mysql
-
 echo "CREATE USER 'es'@'%' IDENTIFIED BY 'kaifazhe';" | _mysql
 echo "GRANT ALL PRIVILEGES ON *.* TO 'es'@'%' IDENTIFIED BY 'kaifazhe' WITH GRANT OPTION;" | _mysql
 echo "FLUSH PRIVILEGES;" | _mysql
+supervisorctl restart mysql
 
 echo "all done!"
