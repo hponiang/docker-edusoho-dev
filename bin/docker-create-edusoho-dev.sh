@@ -103,7 +103,7 @@ if [ ! -d "$www_dir" ]; then
 fi
 mkdir -p ${mysql_dir} && \
 rm -rf ${mysql_dir}/* && \
-docker run --restart=always --name ${DOMAIN} -tid \
+docker run --restart always --name ${DOMAIN} -tid \
         -v ${mysql_dir}:/var/lib/mysql \
         -v ${www_dir}:/var/www/edusoho \
         # -p ${ssh_port}:22 \
@@ -145,7 +145,6 @@ echo "${ip} ${DOMAIN}.local" >> /etc/hosts
 # echo " ssh root@${DOMAIN} -p ${ssh_port}"
 echo '****************** network info***********************'
 echo "ip: ${ip}"
-echo '******************************************************'
 echo '****************** storage info***********************'
 echo "1. mysql_data: ${mysql_dir}"
 echo "2. www_data: ${www_dir}"
