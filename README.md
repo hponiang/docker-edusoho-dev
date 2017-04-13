@@ -42,7 +42,7 @@ Mac: brew install nginx
 
 ```bash
 #若由于网络不给力，请自行配合docker加速器
-docker build -t edusoho/edusoho-dev .
+docker build -t edusoho/edusoho-dev:5.3 .
 ```
 
 ### ubuntu用户，至此可以借助脚本直接运行新容器了
