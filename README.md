@@ -77,6 +77,17 @@ mysql -h t5.edusoho.cn.local -uroot
 #注意：这是用docker-create-edusoho-dev.sh脚本生成的
 ```
 
+```yml
+#项目中数据库连接配置示例
+parameters:
+    database_driver: pdo_mysql
+    database_host: t5.edusoho.cn.local
+    database_port: 3306
+    database_name: edusoho-dev
+    database_user: root
+    database_password:
+```
+
 ## 手动配置说明
 
 ### 先创建一个网络，以便固定住容器的ip

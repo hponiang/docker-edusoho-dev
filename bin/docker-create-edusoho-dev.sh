@@ -138,7 +138,8 @@ EOF
 echo "${ip} ${DOMAIN}.local" >> /etc/hosts
 
 echo '****************** network info***********************'
-echo "ip: ${ip}"
+echo "1. ip: ${ip}"
+echo "2. mysql -h ${DOMAIN}.local -uroot"
 echo '****************** storage info***********************'
 echo "1. mysql_data: ${mysql_dir}"
 echo "2. www_data: ${www_dir}"
