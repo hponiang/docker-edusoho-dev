@@ -137,9 +137,10 @@ EOF
 #add /etc/hosts map
 echo "${ip} ${DOMAIN}.local" >> /etc/hosts
 
-echo '****************** network info***********************'
-echo "1. docker ip: ${ip}"
-echo "2. mysql -h ${DOMAIN}.local -uroot"
+echo '****************** login info***********************'
+echo "1. ssh login: ssh root@${DOMAIN}"
+echo "2. mysql login: mysql -h ${DOMAIN}.local -uroot"
+echo "3. docker exec -ti ${DOMAIN} bash"
 echo '****************** storage info***********************'
 echo "1. mysql_data: ${mysql_dir}"
 echo "2. www_data: ${www_dir}"
