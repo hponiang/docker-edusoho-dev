@@ -37,29 +37,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php5 php5-cli php5-curl ph
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
 RUN sed -i "s/;*max_allowed_packet\s*=\s*\w*/max_allowed_packet = 1024M/g" /etc/mysql/my.cnf
 
-#nodejs
-RUN curl -O https://mirrors.ustc.edu.cn/node/v6.9.2/node-v6.9.2-linux-x64.tar.xz
-    && xz -d node-v6.9.2-linux-x64.tar.xz
-    && tar xvf node-v6.9.2-linux-x64.tar
-    && rm -rf node-v6.9.2-linux-x64.tar
-    && mv node-v6.9.2-linux-x64 /usr/local/node
-    && ln -s /usr/local/node/bin/node /usr/bin/
-    && ln -s /usr/local/node/bin/npm /usr/bin/
-
 #utils
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server
-    && sed -i "s/;*PermitRootLogin\s*without-password/PermitRootLogin yes/g" /etc/ssh/sshd_config
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y sudo
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y vim
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y curl
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y git
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y iptables
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y lsof
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y inetutils-ping
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y xz-utils
-    && curl -o ~/.git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
-    && sed -i '$a source ~/.git-completion.bash' /etc/profile
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor
     && apt-get -y autoremove
     && apt-get clean
     
