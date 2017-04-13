@@ -138,11 +138,19 @@ EOF
 echo "${ip} ${DOMAIN}.local" >> /etc/hosts
 
 echo '****************** network info***********************'
-echo "1. ip: ${ip}"
+echo "1. docker ip: ${ip}"
 echo "2. mysql -h ${DOMAIN}.local -uroot"
 echo '****************** storage info***********************'
 echo "1. mysql_data: ${mysql_dir}"
 echo "2. www_data: ${www_dir}"
+echo '****************** parameters info***********************'
+echo "parameters:"
+echo "    database_driver: pdo_mysql"
+echo "    database_host: t5.edusoho.cn.local"
+echo "    database_port: 3306"
+echo "    database_name: edusoho-dev"
+echo "    database_user: root"
+echo "    database_password:"
 echo '******************************************************'
 
 echo 'nginx reloading'
