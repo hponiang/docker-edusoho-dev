@@ -10,7 +10,7 @@ ENV PHP_MAX_UPLOAD      1024M
 ENV PHP_MAX_POST        1024M
 
 #init
-COPY ubuntu/12.04-sources.list /etc/apt/sources.list
+#COPY ubuntu/12.04-sources.list /etc/apt/sources.list
 #COPY ubuntu/14.04-sources.list /etc/apt/sources.list
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
