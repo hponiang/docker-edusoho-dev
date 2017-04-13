@@ -42,7 +42,7 @@ Mac: brew install nginx
 
 ```bash
 #若由于网络不给力，请自行配合docker加速器
-docker build -t edusoho/edusoho-dev .
+docker build -t edusoho/edusoho-dev:5.3 .
 ```
 
 ### ubuntu用户，至此可以借助脚本直接运行新容器了
@@ -75,6 +75,17 @@ mysql -h t5.edusoho.cn.local -uroot
 #其中 t5.edusoho.cn.local 表示进t5的docker，在域名后面加上 .local 即可
 #账号默认是 root，密码 空
 #注意：这是用docker-create-edusoho-dev.sh脚本生成的
+```
+
+```yml
+#项目中数据库连接配置示例
+parameters:
+    database_driver: pdo_mysql
+    database_host: t5.edusoho.cn.local
+    database_port: 3306
+    database_name: edusoho-dev
+    database_user: root
+    database_password:
 ```
 
 ## 手动配置说明

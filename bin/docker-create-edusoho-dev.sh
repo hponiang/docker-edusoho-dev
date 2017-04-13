@@ -19,18 +19,18 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-get_random_ssh_port(){
-    local min=10000
-    local max=20000
-    echo `expr $RANDOM % $(($max-$min)) + $min`
-}
-
-#specify a ssh port
-is_port_exsit=1
-while [ -n "$is_port_exsit" ]; do
-    ssh_port=$(get_random_ssh_port)
-    is_port_exsit=`lsof -i :${ssh_port} |grep "LISTEN" |awk '{print $1}'`
-done
+# get_random_ssh_port(){
+#     local min=10000
+#     local max=20000
+#     echo `expr $RANDOM % $(($max-$min)) + $min`
+# }
+# 
+# #specify a ssh port
+# is_port_exsit=1
+# while [ -n "$is_port_exsit" ]; do
+#     ssh_port=$(get_random_ssh_port)
+#     is_port_exsit=`lsof -i :${ssh_port} |grep "LISTEN" |awk '{print $1}'`
+# done
 
 #input parameters
 read -p "input domain:" DOMAIN
@@ -106,7 +106,6 @@ rm -rf ${mysql_dir}/* && \
 docker run --restart=always --name ${DOMAIN} -tid \
         -v ${mysql_dir}:/var/lib/mysql \
         -v ${www_dir}:/var/www/edusoho \
-        # -p ${ssh_port}:22 \
         --network ${NETWORK} \
         --ip ${ip} \
         -e DOMAIN="${DOMAIN}" \
@@ -137,15 +136,10 @@ EOF
 
 #add /etc/hosts map
 echo "${ip} ${DOMAIN}.local" >> /etc/hosts
- 
-# echo '******************* login info ***********************'
-# echo '1. change your root password:'
-# echo " docker exec -ti ${DOMAIN} passwd root"
-# echo '2. ssh login to your docker:'
-# echo " ssh root@${DOMAIN} -p ${ssh_port}"
+
 echo '****************** network info***********************'
-echo "ip: ${ip}"
-echo '******************************************************'
+echo "1. ip: ${ip}"
+echo "2. mysql -h ${DOMAIN}.local -uroot"
 echo '****************** storage info***********************'
 echo "1. mysql_data: ${mysql_dir}"
 echo "2. www_data: ${www_dir}"
