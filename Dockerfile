@@ -1,6 +1,5 @@
 FROM ubuntu:12.04.5
-# FROM daocloud.io/library/ubuntu:12.04.5
-# FROM daocloud.io/library/ubuntu:14.04.5
+# FROM ubuntu:14.04.5
 
 MAINTAINER Simon Wood <wuqian@howzhi.com>
 
@@ -10,8 +9,6 @@ ENV PHP_MAX_UPLOAD      1024M
 ENV PHP_MAX_POST        1024M
 
 #init
-COPY ubuntu/12.04-sources.list /etc/apt/sources.list
-#COPY ubuntu/14.04-sources.list /etc/apt/sources.list
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
 #nginx
