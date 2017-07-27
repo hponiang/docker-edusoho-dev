@@ -2,7 +2,8 @@
 
 #set -eo pipefail
     cd /var/www/edusoho/
-    rm -rf /etc/nginx/sites-enabled/default
+    service php-fpm start
+    service nginx start
     #yarn
     #npm run dev
     echo '*******************************'

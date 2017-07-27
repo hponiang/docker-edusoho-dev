@@ -108,19 +108,21 @@ docker network inspect esdev
 ### 运行新容器
 
 ```bash
-mkdir -p /var/www/t5.edusoho.cn && \
-mkdir -p /var/mysql/t5.edusoho.cn && \
-rm -rf /var/mysql/t5.edusoho.cn/* && \
-docker run --name t5.edusoho.cn -tid \
-        -v /var/mysql/t5.edusoho.cn:/var/lib/mysql \
-        -v /var/www/t5.edusoho.cn:/var/www/edusoho \
+mkdir -p /var/www/ld.dev && \
+mkdir -p /var/mysql/ld.dev && \
+rm -rf /var/mysql/ld.dev/* && \
+docker run --name ld.dev -tid \
+        -v /var/mysql/ld.dev:/var/lib/mysql \
+        -v /var/www/ld.dev:/var/www/edusoho \
         --cpuset-cpus 2 \
         --memory 2048m \
         --network esdev \
         --ip 172.20.0.2 \
-        -e DOMAIN="t5.edusoho.cn" \
+        -e DOMAIN="ld.dev" \
         -e IP="172.20.0.2" \
-        edusoho/edusoho-dev
+        edu
+
+docker run --name ld.dev -tid -v /Users/apple/Desktop/wwwroot/dockerroot/mysql -v /Users/apple/Desktop/wwwroot/dockerroot/html:/var/www/edusoho --memory 2048m --network esdev         --ip 172.20.0.2 -e DOMAIN="ld.dev"         -e IP="172.20.0.2" edu
 ```
 
 参数说明
