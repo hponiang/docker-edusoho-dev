@@ -124,7 +124,7 @@ docker run --name ld.dev -tid \
 ```
 
 ```bash
-docker run --name ld.dev -tid -v /Users/apple/Desktop/wwwroot/dockerroot/mysql -v /Users/apple/Desktop/wwwroot/dockerroot/html:/var/www/edusoho --memory 2048m --network esdev         --ip 172.20.0.2 -e DOMAIN="ld.dev"         -e IP="172.20.0.2" edu
+docker run --name ld.dev -tid -v /Users/apple/Desktop/wwwroot/dockerroot/mysql:/var/lib/mysql -v /Users/apple/Desktop/wwwroot/dockerroot/html:/var/www/edusoho --memory 2048m --network esdev         --ip 172.20.0.2 -e DOMAIN="ld.dev"         -e IP="172.20.0.2" edu
 ```
 
 

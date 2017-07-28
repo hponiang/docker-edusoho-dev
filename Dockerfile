@@ -5,19 +5,23 @@ ARG DEBIAN_FRONTEND=noninteractive
 #init
 #COPY ubuntu/12.04-sources.list /etc/apt/sources.list
 COPY ubuntu/16.4-sources.list /etc/apt/sources.list
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata \
+    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
 
 #nginx
-RUN apt-get update \
-    && apt-get autoremove \
-    && apt-get autoclean \
-    && apt-get dist-upgrade \
-    && apt-get upgrade \
-     && apt-get install -y nginx \
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    && apt-get install --assume-yes apt-utils \
+    && apt-get update -y \
+    && apt-get autoremove -y \
+    && apt-get autoclean -y \
+    && apt-get dist-upgrade -y \
+    && apt-get upgrade -y \
+    && apt-get install -y nginx \
     # && lineNum=`sed -n -e '/sendfile/=' /etc/nginx/nginx.conf`; sed -i $((lineNum+1))'i client_max_body_size 1024M;' /etc/nginx/nginx.conf \
     # && sed -i '1i daemon off;' /etc/nginx/nginx.conf \
-    && mkdir -p /var/www/edusoho
+    && mkdir -p /var/www/edusoho \
     && rm /etc/nginx/sites-enabled/default
 
 COPY nginx/ld.conf /etc/nginx/sites-enabled/
@@ -33,9 +37,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nginx php7.0-fpm php7.0-my
 
 
 
-RUN  apt-get update \
-     &&  npm install -g yarn \
-     && yarn config set registry https://registry.npm.taobao.org 
+RUN  DEBIAN_FRONTEND=noninteractive \
+     && npm install -g yarn \
+     && yarn config set registry https://registry.npm.taobao.org \
+     && apt install php-xdebug
+
+COPY ./php/xdebug.ini:/etc/php/7.0/mods-available/xdebug.ini
+   
 
 # #php
 # RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php5 php5-cli php5-curl php5-fpm php5-intl php5-mcrypt php5-mysqlnd php5-gd \
