@@ -2,11 +2,11 @@
 
 #set -eo pipefail
     cd /var/www/edusoho/
-    service php-fpm start
+    service php7.0-fpm start
     service nginx start
-    #yarn
-    #npm run dev
+    service mysql start
+    # yarn
+    # npm run dev
     echo '*******************************'
     echo '* welcome to develop lder! *'
-    echo '*******************************
-
+    echo '*******************************'

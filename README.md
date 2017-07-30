@@ -109,22 +109,17 @@ docker network inspect esdev
 ### 运行新容器
 
 ```bash
-mkdir -p /var/www/ld.dev && \
-mkdir -p /var/mysql/ld.dev && \
-rm -rf /var/mysql/ld.dev/* && \
+sudo mkdir -p /Users/dt/wwwroot/dockerroot/html && \
+sudo mkdir -p /Users/dt/wwwroot/dockerroot/mysql && \
 docker run --name ld.dev -tid \
-        -v /var/mysql/ld.dev:/var/lib/mysql \
-        -v /var/www/ld.dev:/var/www/edusoho \
+        -v /Users/dt/wwwroot/dockerroot/mysql:/var/lib/mysql \
+        -v /Users/dt/wwwroot/dockerroot/html:/var/www/edusoho \
         --network esdev \
         --ip 172.20.0.2 \
         -e DOMAIN="ld.dev" \
         -e IP="172.20.0.2" \
         edu
 
-```
-
-```bash
-docker run --name ld.dev -tid -v /Users/apple/Desktop/wwwroot/dockerroot/mysql:/var/lib/mysql -v /Users/apple/Desktop/wwwroot/dockerroot/html:/var/www/edusoho --memory 2048m --network esdev         --ip 172.20.0.2 -e DOMAIN="ld.dev"         -e IP="172.20.0.2" edu
 ```
 
 

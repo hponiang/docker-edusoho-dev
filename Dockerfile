@@ -40,9 +40,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nginx php7.0-fpm php7.0-my
 RUN  DEBIAN_FRONTEND=noninteractive \
      && npm install -g yarn \
      && yarn config set registry https://registry.npm.taobao.org \
-     && apt install php-xdebug
+     && apt-get install php-xdebug
 
-COPY ./php/xdebug.ini:/etc/php/7.0/mods-available/xdebug.ini
+COPY ./php/xdebug.ini /etc/php/7.0/mods-available/xdebug.ini
    
 
 # #php
@@ -68,8 +68,8 @@ COPY ./php/xdebug.ini:/etc/php/7.0/mods-available/xdebug.ini
     
 # COPY supervisor/edusoho.conf /etc/supervisor/conf.d
 
-# COPY entrypoint.sh /usr/bin/entrypoint.sh
-# RUN chmod +x /usr/bin/entrypoint.sh
-
-EXPOSE 80
-# CMD ["entrypoint.sh"]
+ COPY entrypoint.sh /usr/bin/entrypoint.sh
+ RUN chmod +x /usr/bin/entrypoint.sh
+ VOLUME ["/var/lib/mysql","/var/www/edusoho"]
+EXPOSE 80 3306
+CMD ["entrypoint.sh"]
